@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def sigmoid(x):
     return 1.0 / (1 + np.exp(-x))
@@ -23,3 +24,35 @@ class BasicNeuralNetwork:
         d_weights1 = np.dot(self.input.T, (np.dot(2 * (self.y - self.output) * sigmoid_derivative(self.output), self.weights2.T) * sigmoid_derivative(self.layer1)))
         self.weights1 += d_weights1
         self.weights2 += d_weights2
+
+    def train(self, iterations):
+        for i in range(iterations):
+            self.feedforward()
+            self.backprop()
+            #progress = i * 100 / iterations
+            print("Iteration %d / %d" % (i, iterations), end = "\r")
+        print("Iteration %d / %d" % (i, iterations), end = "\r")
+        print()
+
+    def checkvalue(self, input):
+        self.input = input
+        self.feedforward()
+        left = []
+        color = []
+        max = -1
+        maxindex = -1
+        for i in range(len(self.output)):
+            if self.output[i]>max:
+                max = self.output[i]
+                maxindex = i
+            left.append(i)
+            color.append('red')
+        color[maxindex] = 'green'
+        height = self.output
+        tick_label = left
+        plt.bar(left, height, tick_label = tick_label, 
+                width = 0.8, color = color) 
+        plt.xlabel('x - axis') 
+        plt.ylabel('y - axis') 
+        plt.title('Test result: ' + str(maxindex)) 
+        plt.show()
